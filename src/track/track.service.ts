@@ -9,6 +9,7 @@ import { v4 } from 'uuid';
 import { ERROR_MSG_ALBUM } from '../album/messages/error.message';
 import { ERROR_MSG_ARTIST } from '../artist/messages/error.message';
 import { ERROR_MSG_TRACK } from './messages/error.message';
+import { ITrack } from './types/track.interface';
 
 @Injectable()
 export class TrackService {

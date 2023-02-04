@@ -14,6 +14,7 @@ import {
 import { ValidateUuidPipe } from '../pipes/ValidateUuidPipe';
 import { TrackService } from './track.service';
 import { TrackDto } from './dto/track.dto';
+import { ITrack } from './types/track.interface';
 
 @Controller('track')
 export class TrackController {

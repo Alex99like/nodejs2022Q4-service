@@ -1,4 +1,4 @@
-interface ITrack {
+export interface ITrack {
   id: string;
   name: string;
   artistId: string | null;
