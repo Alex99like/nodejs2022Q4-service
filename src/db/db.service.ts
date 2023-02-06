@@ -3,13 +3,15 @@ import { IUser } from '../user/types/user.interface';
 import { IArtist } from '../artist/types/artist.interface';
 import { IAlbum } from '../album/types/album.interface';
 import { Favorites } from '../favs/types/favs.interface';
+import {ITrack} from "../track/types/track.interface";
+
 
 @Injectable()
 export class DbService {
   private readonly users: IUser[] = [];
   private readonly artists: IArtist[] = [];
-  private readonly tracks = [];
-  private readonly albums = [];
+  private readonly tracks: ITrack[] = [];
+  private readonly albums: IAlbum[] = [];
   private readonly favorites: Favorites = {
     artists: [],
     albums: [],
