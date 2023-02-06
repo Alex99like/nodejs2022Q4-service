@@ -8,15 +8,23 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/Alex99like/nodejs2022Q4-service
+```
+### Branch
+
+```
+git checkout develop
 ```
 
 ## Installing NPM modules
 
 ```
-npm install
+npm install 
 ```
-
+or 
+```
+yarn install 
+```
 ## Running application
 
 ```
