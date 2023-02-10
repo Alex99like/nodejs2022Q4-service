@@ -4,19 +4,27 @@ import { ArtistDto } from './dto/artist.dto';
 import { IArtist } from './types/artist.interface';
 import { v4 } from 'uuid';
 import { ERROR_MSG_ARTIST } from './messages/error.message';
+import {Repository} from "typeorm";
+import {ArtistEntity} from "./entities/artist.entity";
+import {InjectRepository} from "@nestjs/typeorm";
 
 @Injectable()
 export class ArtistService {
-  constructor(private readonly dbService: DbService) {}
+  constructor(
+    private readonly dbService: DbService,
+    @InjectRepository(ArtistEntity)
+    private readonly artistRepository: Repository<ArtistEntity>
+  ) {}
 
   async getById(id: string): Promise<IArtist | null> {
-    const artist = await this.dbService.getByKeyArtist({ key: 'id', prop: id });
+    //const artist = await this.dbService.getByKeyArtist({ key: 'id', prop: id });
+    const artist = await this.artistRepository.findOne({ where: { id } });
 
     return artist ? artist : null;
   }
 
   async getAll(): Promise<IArtist[]> {
-    return this.dbService.getAllArtist();
+    return this.artistRepository.find();
   }
 
   async getByIdArtist(id: string): Promise<IArtist> {
@@ -35,8 +43,7 @@ export class ArtistService {
       ...dto,
     };
 
-    await this.dbService.saveArtist(newArtist);
-    return newArtist;
+    return this.artistRepository.save(newArtist);
   }
 
   async update(id: string, dto: ArtistDto): Promise<IArtist> {
@@ -47,7 +54,7 @@ export class ArtistService {
       ...dto,
     };
 
-    await this.dbService.updateArtist(artist.id, newArtist);
+    await this.artistRepository.save(newArtist);
 
     return newArtist;
   }
@@ -58,7 +65,7 @@ export class ArtistService {
     await this.changeTrack(artist);
     await this.changeFavs(artist.id);
 
-    await this.dbService.deleteArtist(id);
+    await this.artistRepository.delete(id);
   }
 
   async changeTrack(artist: IArtist): Promise<void> {
