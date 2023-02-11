@@ -9,19 +9,26 @@ import { v4 } from 'uuid';
 import { IAlbum } from './types/album.interface';
 import { ERROR_MSG_ALBUM } from './messages/error.message';
 import { ERROR_MSG_ARTIST } from '../artist/messages/error.message';
+import {Repository} from "typeorm";
+import {AlbumEntity} from "./entities/album.entity";
+import {InjectRepository} from "@nestjs/typeorm";
 
 @Injectable()
 export class AlbumService {
-  constructor(private readonly dbService: DbService) {}
+  constructor(
+    private readonly dbService: DbService,
+    @InjectRepository(AlbumEntity)
+    private readonly albumRepository: Repository<AlbumEntity>
+  ) {}
 
   async getById(id: string): Promise<IAlbum | null> {
-    const album = await this.dbService.getByKeyAlbum({ key: 'id', prop: id });
+    const album = await this.albumRepository.findOne({ where: { id } });
 
     return album ? album : null;
   }
 
   async getAll(): Promise<IAlbum[]> {
-    return this.dbService.getAllAlbums();
+    return await this.albumRepository.find();
   }
 
   async getByIdAlbum(id: string): Promise<IAlbum> {
@@ -41,9 +48,7 @@ export class AlbumService {
       ...dto,
     };
 
-    await this.dbService.saveAlbum(newAlbum);
-
-    return newAlbum;
+    return this.albumRepository.save(newAlbum);
   }
 
   async update(id: string, dto: AlbumDTO): Promise<IAlbum> {
@@ -56,9 +61,7 @@ export class AlbumService {
       ...dto,
     };
 
-    await this.dbService.updateAlbum(album.id, newUser);
-
-    return newUser;
+    return await this.albumRepository.save(newUser);
   }
 
   async delete(id: string): Promise<void> {
@@ -67,7 +70,7 @@ export class AlbumService {
     await this.changeTrack(album);
     await this.changeFavs(album.id);
 
-    await this.dbService.deleteAlbum(album.id);
+    await this.albumRepository.delete(album.id);
   }
 
   async checkArtist(id: string | null): Promise<void> {

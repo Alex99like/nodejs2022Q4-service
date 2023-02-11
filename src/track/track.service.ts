@@ -10,17 +10,24 @@ import { ERROR_MSG_ALBUM } from '../album/messages/error.message';
 import { ERROR_MSG_ARTIST } from '../artist/messages/error.message';
 import { ERROR_MSG_TRACK } from './messages/error.message';
 import { ITrack } from './types/track.interface';
+import {InjectRepository} from "@nestjs/typeorm";
+import {TrackEntity} from "./entities/track.entity";
+import {Repository} from "typeorm";
 
 @Injectable()
 export class TrackService {
-  constructor(private readonly dbService: DbService) {}
+  constructor(
+    private readonly dbService: DbService,
+    @InjectRepository(TrackEntity)
+    private readonly trackRepository: Repository<TrackEntity>
+  ) {}
 
   async getAll(): Promise<ITrack[]> {
-    return await this.dbService.getAllTracks();
+    return await this.trackRepository.find();
   }
 
   async getById(id: string): Promise<ITrack> {
-    const track = await this.dbService.getByKeyTrack({ key: 'id', prop: id });
+    const track = await this.trackRepository.findOne({ where: { id } });
 
     if (!track) {
       throw new NotFoundException(ERROR_MSG_TRACK.NOT_FOUND);
@@ -39,8 +46,7 @@ export class TrackService {
       ...dto,
     };
 
-    await this.dbService.saveTrack(newTrack);
-    return newTrack;
+    return this.trackRepository.save(newTrack);
   }
 
   async update(id: string, dto: TrackDto): Promise<ITrack> {
@@ -54,16 +60,14 @@ export class TrackService {
       ...dto,
     };
 
-    await this.dbService.updateTrack(track.id, newTrack);
-
-    return newTrack;
+    return this.trackRepository.save(newTrack);
   }
 
   async delete(id: string): Promise<void> {
     const track = await this.getById(id);
     await this.changeFavs(track.id);
 
-    await this.dbService.deleteTrack(track.id);
+    await this.trackRepository.delete(track.id);
   }
 
   async checkArtist(id: string): Promise<void> {
