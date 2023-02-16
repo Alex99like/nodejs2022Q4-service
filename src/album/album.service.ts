@@ -9,26 +9,29 @@ import { v4 } from 'uuid';
 import { IAlbum } from './types/album.interface';
 import { ERROR_MSG_ALBUM } from './messages/error.message';
 import { ERROR_MSG_ARTIST } from '../artist/messages/error.message';
-import {Repository} from "typeorm";
-import {AlbumEntity} from "./entities/album.entity";
-import {InjectRepository} from "@nestjs/typeorm";
+import {AlbumRepository} from "./repositories/album.repository";
+import {FavsRepository} from "../favs/repositories/favs.repository";
+import {TrackRepository} from "../track/repositories/track.repository";
+import {ArtistRepository} from "../artist/repositories/artist.repository";
 
 @Injectable()
 export class AlbumService {
   constructor(
-    private readonly dbService: DbService,
-    @InjectRepository(AlbumEntity)
-    private readonly albumRepository: Repository<AlbumEntity>
+    //private readonly dbService: DbService,
+    private readonly albumRepository: AlbumRepository,
+    private readonly favsRepository: FavsRepository,
+    private readonly trackRepository: TrackRepository,
+    private readonly artistRepository: ArtistRepository
   ) {}
 
   async getById(id: string): Promise<IAlbum | null> {
-    const album = await this.albumRepository.findOne({ where: { id } });
+    const album = await this.albumRepository.getById(id);
 
     return album ? album : null;
   }
 
   async getAll(): Promise<IAlbum[]> {
-    return await this.albumRepository.find();
+    return await this.albumRepository.getAll();
   }
 
   async getByIdAlbum(id: string): Promise<IAlbum> {
@@ -48,7 +51,7 @@ export class AlbumService {
       ...dto,
     };
 
-    return this.albumRepository.save(newAlbum);
+    return this.albumRepository.createAndUpdate(newAlbum);
   }
 
   async update(id: string, dto: AlbumDTO): Promise<IAlbum> {
@@ -61,7 +64,7 @@ export class AlbumService {
       ...dto,
     };
 
-    return await this.albumRepository.save(newUser);
+    return await this.albumRepository.createAndUpdate(newUser);
   }
 
   async delete(id: string): Promise<void> {
@@ -70,33 +73,25 @@ export class AlbumService {
     await this.changeTrack(album);
     await this.changeFavs(album.id);
 
-    await this.albumRepository.delete(album.id);
+    await this.albumRepository.remove(album.id);
   }
 
   async checkArtist(id: string | null): Promise<void> {
     if (id !== null) {
-      const artist = await this.dbService.getByKeyArtist({
-        key: 'id',
-        prop: id,
-      });
+     const artist = await this.artistRepository.artistById(id);
 
-      if (!artist) throw new BadRequestException(ERROR_MSG_ARTIST.NOT_FOUND);
+     if (!artist) throw new BadRequestException(ERROR_MSG_ARTIST.NOT_FOUND);
     }
   }
 
   async changeTrack(artist: IAlbum): Promise<void> {
-    const tracks = await this.dbService.getAllTracks({
-      key: 'albumId',
-      prop: artist.id,
-    });
-
+    const tracks = await this.trackRepository.getAll()
     for await (const track of tracks) {
-      await this.dbService.updateTrack(track.id, { ...track, albumId: null });
+     await this.trackRepository.createAndUpdate({ ...track, albumId: null });
     }
   }
 
   async changeFavs(albumId: string): Promise<void> {
-    const album = await this.dbService.findFavsAlbum(albumId);
-    if (album) await this.dbService.deleteFavsAlbum(album.id);
+    await this.favsRepository.remove(albumId)
   }
 }

@@ -2,69 +2,57 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 import { UnprocessableException } from '../Error/Unprocessable.error';
 import { ERROR_MSG_TRACK } from '../track/messages/error.message';
+import {InjectRepository} from "@nestjs/typeorm";
+import {FavsEntity} from "./entities/favs.entity";
+import {Repository} from "typeorm";
+import {FavsRepository} from "./repositories/favs.repository";
+import {ArtistRepository} from "../artist/repositories/artist.repository";
+import {TrackRepository} from "../track/repositories/track.repository";
+import {AlbumRepository} from "../album/repositories/album.repository";
+import {ERROR_MSG_ALBUM} from "../album/messages/error.message";
+import {ERROR_MSG_ARTIST} from "../artist/messages/error.message";
 
 @Injectable()
 export class FavsService {
-  constructor(private readonly dbService: DbService) {}
+  constructor(
+    private readonly favsRepository: FavsRepository,
+    private readonly artistRepository: ArtistRepository,
+    private readonly trackRepository: TrackRepository,
+    private readonly albumRepository: AlbumRepository
+  ) {}
 
   async getFavorites() {
-    return await this.dbService.getFavorites();
+    return await this.favsRepository.getAll();
   }
 
   async addTrack(trackId: string) {
-    const track = await this.dbService.getByKeyTrack({
-      key: 'id',
-      prop: trackId,
-    });
+    const track = await this.trackRepository.getById(trackId)
 
     if (!track) throw new UnprocessableException(ERROR_MSG_TRACK.NOT_FOUND);
 
-    await this.dbService.addFavsTrack(track);
-  }
-
-  async removeTrack(trackId: string) {
-    const track = await this.dbService.findFavsTrack(trackId);
-
-    if (!track) throw new NotFoundException(ERROR_MSG_TRACK.NOT_FOUND);
-
-    await this.dbService.deleteFavsTrack(track.id);
+    await this.favsRepository.addTrack(trackId);
   }
 
   async addAlbum(albumId: string) {
-    const album = await this.dbService.getByKeyAlbum({
-      key: 'id',
-      prop: albumId,
-    });
+    const album = await this.albumRepository.getById(albumId)
 
-    if (!album) throw new UnprocessableException(ERROR_MSG_TRACK.NOT_FOUND);
+    if (!album) throw new UnprocessableException(ERROR_MSG_ALBUM.NOT_FOUND);
 
-    await this.dbService.addFavsAlbum(album);
-  }
-
-  async removeAlbum(albumId: string) {
-    const album = await this.dbService.findFavsAlbum(albumId);
-
-    if (!album) throw new NotFoundException(ERROR_MSG_TRACK.NOT_FOUND);
-
-    await this.dbService.deleteFavsAlbum(album.id);
+    await this.favsRepository.addAlbum(albumId);
   }
 
   async addArtist(artistId: string) {
-    const artist = await this.dbService.getByKeyArtist({
-      key: 'id',
-      prop: artistId,
-    });
 
-    if (!artist) throw new UnprocessableException(ERROR_MSG_TRACK.NOT_FOUND);
+    const artist = await this.artistRepository.artistById(artistId)
 
-    await this.dbService.addFavsArtist(artist);
+    if (!artist) throw new UnprocessableException(ERROR_MSG_ARTIST.NOT_FOUND);
+
+    await this.favsRepository.addArtist(artistId);
   }
 
-  async removeArtist(artistId: string) {
-    const artist = await this.dbService.findFavsArtist(artistId);
+  async remove(artistId: string) {
+    const entity = await this.favsRepository.remove(artistId)
 
-    if (!artist) throw new NotFoundException(ERROR_MSG_TRACK.NOT_FOUND);
-
-    await this.dbService.deleteFavsArtist(artist.id);
+    if (!entity) throw new NotFoundException(ERROR_MSG_TRACK.NOT_FOUND);
   }
 }

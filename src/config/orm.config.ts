@@ -4,6 +4,7 @@ import {UserEntity} from "../user/entities/user.entity";
 import {ArtistEntity} from "../artist/entities/artist.entity";
 import {TrackEntity} from "../track/entities/track.entity";
 import {AlbumEntity} from "../album/entities/album.entity";
+import {FavsEntity} from "../favs/entities/favs.entity";
 
 export const config: TypeOrmModuleOptions = {
   type: 'postgres',
@@ -12,7 +13,7 @@ export const config: TypeOrmModuleOptions = {
   password: '123456',
   username: 'postgres',
   database: 'service',
-  entities: [ArtistEntity, UserEntity, TrackEntity, AlbumEntity],
+  entities: [ArtistEntity, UserEntity, TrackEntity, AlbumEntity, FavsEntity],
   //entities: [__dirname + '/../**/*.entity.{js,ts}'],
   synchronize: true,
 }

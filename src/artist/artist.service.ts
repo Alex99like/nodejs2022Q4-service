@@ -4,27 +4,26 @@ import { ArtistDto } from './dto/artist.dto';
 import { IArtist } from './types/artist.interface';
 import { v4 } from 'uuid';
 import { ERROR_MSG_ARTIST } from './messages/error.message';
-import {Repository} from "typeorm";
-import {ArtistEntity} from "./entities/artist.entity";
-import {InjectRepository} from "@nestjs/typeorm";
+import {ArtistRepository} from "./repositories/artist.repository";
+import {FavsRepository} from "../favs/repositories/favs.repository";
+import {TrackRepository} from "../track/repositories/track.repository";
 
 @Injectable()
 export class ArtistService {
   constructor(
-    private readonly dbService: DbService,
-    @InjectRepository(ArtistEntity)
-    private readonly artistRepository: Repository<ArtistEntity>
+    private readonly artistRepository: ArtistRepository,
+    private readonly favsRepository: FavsRepository,
+    private readonly trackRepository: TrackRepository
   ) {}
 
   async getById(id: string): Promise<IArtist | null> {
-    //const artist = await this.dbService.getByKeyArtist({ key: 'id', prop: id });
-    const artist = await this.artistRepository.findOne({ where: { id } });
+    const artist = await this.artistRepository.artistById(id)
 
     return artist ? artist : null;
   }
 
   async getAll(): Promise<IArtist[]> {
-    return this.artistRepository.find();
+    return this.artistRepository.getAll();
   }
 
   async getByIdArtist(id: string): Promise<IArtist> {
@@ -43,7 +42,7 @@ export class ArtistService {
       ...dto,
     };
 
-    return this.artistRepository.save(newArtist);
+    return this.artistRepository.createAndUpdate(newArtist);
   }
 
   async update(id: string, dto: ArtistDto): Promise<IArtist> {
@@ -54,7 +53,7 @@ export class ArtistService {
       ...dto,
     };
 
-    await this.artistRepository.save(newArtist);
+    await this.artistRepository.createAndUpdate(newArtist);
 
     return newArtist;
   }
@@ -65,22 +64,18 @@ export class ArtistService {
     await this.changeTrack(artist);
     await this.changeFavs(artist.id);
 
-    await this.artistRepository.delete(id);
+    await this.artistRepository.remove(id);
   }
 
   async changeTrack(artist: IArtist): Promise<void> {
-    const tracks = await this.dbService.getAllTracks({
-      key: 'artistId',
-      prop: artist.id,
-    });
+    const tracks = await this.trackRepository.getAll();
 
     for await (const track of tracks) {
-      await this.dbService.updateTrack(track.id, { ...track, artistId: null });
+      await this.trackRepository.createAndUpdate({ ...track, artistId: null });
     }
   }
 
   async changeFavs(artistId: string): Promise<void> {
-    const artist = await this.dbService.findFavsArtist(artistId);
-    if (artist) await this.dbService.deleteFavsArtist(artist.id);
+    await this.favsRepository.remove(artistId)
   }
 }

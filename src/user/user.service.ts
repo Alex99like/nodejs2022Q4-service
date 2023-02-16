@@ -12,22 +12,20 @@ import { ERROR_MSG_USER } from './messages/error.message';
 import {InjectRepository} from "@nestjs/typeorm";
 import {UserEntity} from "./entities/user.entity";
 import {Repository} from "typeorm";
+import {UserRepository} from "./repositories/user.repository";
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    private readonly userRepository: UserRepository
   ) {}
 
   async getAll(): Promise<IUser[]> {
-    const users = await this.userRepository.find({select: ['id', 'login', 'version', 'createdAt', 'updatedAt']});
-
-    return users.map((el) => ({ ...el, createdAt: +el.createdAt, updatedAt: +el.updatedAt }))
+    return this.userRepository.getAll()
   }
 
   async getById(id: string, viewPassword = false): Promise<IUser> {
-    const user = await this.userRepository.findOne({ where: { id } })
+    const user = await this.userRepository.userById(id)
     if (!user) throw new NotFoundException(ERROR_MSG_USER.NOT_FOUND);
 
     return !viewPassword ? this.handlerRequest(user) : user;
@@ -41,7 +39,7 @@ export class UserService {
       updatedAt: Date.now(),
     };
 
-    const user = await this.userRepository.save(newUser)
+    const user = await this.userRepository.createAndUpdateUser(newUser)
 
     return this.handlerRequest(user);
   }
@@ -57,13 +55,13 @@ export class UserService {
     user.version = user.version + 1;
     user.updatedAt = Date.now();
 
-    const updateUser = await this.userRepository.save(user)
+    const updateUser = await this.userRepository.createAndUpdateUser(user)
     return this.handlerRequest(updateUser)
   }
 
   async delete(id: string): Promise<void> {
     const user = await this.getById(id);
-    await this.userRepository.delete(user.id);
+    await this.userRepository.remove(user.id);
   }
 
   async handlerRequest(data: IUser): Promise<IUser> {
