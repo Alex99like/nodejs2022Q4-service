@@ -42,7 +42,7 @@ export class ArtistService {
       ...dto,
     };
 
-    return this.artistRepository.createAndUpdate(newArtist);
+    return await this.artistRepository.createAndUpdate(newArtist);
   }
 
   async update(id: string, dto: ArtistDto): Promise<IArtist> {
@@ -53,9 +53,7 @@ export class ArtistService {
       ...dto,
     };
 
-    await this.artistRepository.createAndUpdate(newArtist);
-
-    return newArtist;
+    return await this.artistRepository.createAndUpdate(newArtist);
   }
 
   async delete(id: string): Promise<void> {

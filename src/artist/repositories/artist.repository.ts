@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {BadRequestException, Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {ArtistEntity} from "../entities/artist.entity";
@@ -20,10 +20,18 @@ export class ArtistRepository {
   }
 
   async createAndUpdate(dto: ArtistDto) {
-    return await this.artistRepository.save(dto)
+    try {
+      return await this.artistRepository.save(dto)
+    } catch (e) {
+      throw new BadRequestException("No Valid Body Request")
+    }
   }
 
   async remove(id: string) {
-    return await this.artistRepository.delete(id)
+    try {
+      return await this.artistRepository.delete(id)
+    } catch (e) {
+      throw new BadRequestException("No Valid Body Request")
+    }
   }
 }

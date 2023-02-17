@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {BadRequestException, Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {TrackEntity} from "../entities/track.entity";
 import {Repository} from "typeorm";
@@ -20,10 +20,18 @@ export class TrackRepository {
   }
 
   async createAndUpdate(dto: TrackDto) {
-    return await this.trackRepository.save(dto)
+    try {
+      return await this.trackRepository.save(dto)
+    } catch (e) {
+      throw new BadRequestException("No Valid Body Request")
+    }
   }
 
   async remove(id: string) {
-    return await this.trackRepository.delete(id)
+    try {
+      return await this.trackRepository.delete(id)
+    } catch (e) {
+      throw new BadRequestException("No Valid Body Request")
+    }
   }
 }

@@ -51,7 +51,7 @@ export class AlbumService {
       ...dto,
     };
 
-    return this.albumRepository.createAndUpdate(newAlbum);
+    return await this.albumRepository.createAndUpdate(newAlbum);
   }
 
   async update(id: string, dto: AlbumDTO): Promise<IAlbum> {

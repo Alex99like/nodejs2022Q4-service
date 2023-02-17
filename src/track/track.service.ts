@@ -43,7 +43,7 @@ export class TrackService {
       ...dto,
     };
 
-    return this.trackRepository.createAndUpdate(newTrack);
+    return await this.trackRepository.createAndUpdate(newTrack);
   }
 
   async update(id: string, dto: TrackDto): Promise<ITrack> {
@@ -57,7 +57,7 @@ export class TrackService {
       ...dto,
     };
 
-    return this.trackRepository.createAndUpdate(newTrack);
+    return await this.trackRepository.createAndUpdate(newTrack);
   }
 
   async delete(id: string): Promise<void> {
