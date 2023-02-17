@@ -1,9 +1,16 @@
 import {DataSource} from "typeorm";
-import {config} from "./config/orm.config";
+import {entities} from "./config/orm.config";
+import { config } from 'dotenv'
+config()
 
-// @ts-ignore
 const AppDataSource = new DataSource({
-  ...config,
+  type: 'postgres',
+  host: 'localhost',
+  port: +process.env.PG_PORT,
+  password: process.env.PG_PASSWORD,
+  username: process.env.PG_USERNAME,
+  database: process.env.PG_DATABASE,
+  entities: entities,
   migrations: ['src/migrations/*.ts'],
   //migrations: ["src/migrations/*.ts"]
   // type: 'postgres',
