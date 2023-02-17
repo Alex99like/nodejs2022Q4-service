@@ -14,6 +14,5 @@ export const config: TypeOrmModuleOptions = {
   username: 'postgres',
   database: 'service',
   entities: [ArtistEntity, UserEntity, TrackEntity, AlbumEntity, FavsEntity],
-  //entities: [__dirname + '/../**/*.entity.{js,ts}'],
-  synchronize: true,
+  synchronize: true
 }
