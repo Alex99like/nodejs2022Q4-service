@@ -83,7 +83,10 @@ export class AlbumService {
   }
 
   async changeTrack(album: IAlbum): Promise<void> {
-    const tracks = await this.trackRepository.getAll();
+    const tracks = await this.trackRepository.getAll({
+      tag: 'albumId',
+      id: album.id,
+    });
     for await (const track of tracks) {
       await this.trackRepository.createAndUpdate({ ...track, albumId: null });
     }

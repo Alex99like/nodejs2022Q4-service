@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TrackEntity } from '../entities/track.entity';
 import { Repository } from 'typeorm';
 import { TrackDto } from '../dto/track.dto';
+import { ITrack } from '../types/track.interface';
 
 @Injectable()
 export class TrackRepository {
@@ -11,7 +12,12 @@ export class TrackRepository {
     private readonly trackRepository: Repository<TrackEntity>,
   ) {}
 
-  async getAll() {
+  async getAll(option?: { tag: keyof ITrack; id: string }) {
+    if (option) {
+      return await this.trackRepository.find({
+        where: { [option.tag]: option.id },
+      });
+    }
     return await this.trackRepository.find();
   }
 

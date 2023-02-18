@@ -65,7 +65,10 @@ export class ArtistService {
   }
 
   async changeTrack(artist: IArtist): Promise<void> {
-    const tracks = await this.trackRepository.getAll();
+    const tracks = await this.trackRepository.getAll({
+      tag: 'artistId',
+      id: artist.id,
+    });
 
     for await (const track of tracks) {
       await this.trackRepository.createAndUpdate({ ...track, artistId: null });
