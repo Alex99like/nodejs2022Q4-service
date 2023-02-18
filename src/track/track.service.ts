@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { DbService } from '../db/db.service';
 import { TrackDto } from './dto/track.dto';
 import { v4 } from 'uuid';
 import { ERROR_MSG_TRACK } from './messages/error.message';
@@ -34,9 +33,6 @@ export class TrackService {
   }
 
   async create(dto: TrackDto): Promise<ITrack> {
-    //!!! Test Error Album and Artist
-    //await this.checkArtist(dto.artistId)
-    //await this.checkAlbum(dto.albumId)
 
     const newTrack: ITrack = {
       id: v4(),

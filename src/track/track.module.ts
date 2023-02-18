@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { TrackController } from './track.controller';
-import { DbModule } from '../db/db.module';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {TrackEntity} from "./entities/track.entity";
 import {TrackRepository} from "./repositories/track.repository";
@@ -13,7 +12,7 @@ import {ArtistRepository} from "../artist/repositories/artist.repository";
 import {AlbumRepository} from "../album/repositories/album.repository";
 
 @Module({
-  imports: [DbModule, TypeOrmModule.forFeature([
+  imports: [TypeOrmModule.forFeature([
     ArtistEntity,
     FavsEntity,
     AlbumEntity,

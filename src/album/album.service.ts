@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { DbService } from '../db/db.service';
 import { AlbumDTO } from './dto/album.dto';
 import { v4 } from 'uuid';
 import { IAlbum } from './types/album.interface';

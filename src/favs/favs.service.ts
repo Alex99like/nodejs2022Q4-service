@@ -1,10 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DbService } from '../db/db.service';
 import { UnprocessableException } from '../Error/Unprocessable.error';
 import { ERROR_MSG_TRACK } from '../track/messages/error.message';
-import {InjectRepository} from "@nestjs/typeorm";
-import {FavsEntity} from "./entities/favs.entity";
-import {Repository} from "typeorm";
 import {FavsRepository} from "./repositories/favs.repository";
 import {ArtistRepository} from "../artist/repositories/artist.repository";
 import {TrackRepository} from "../track/repositories/track.repository";

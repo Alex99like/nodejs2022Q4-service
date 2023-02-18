@@ -3,15 +3,10 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
-import { DbService } from '../db/db.service';
 import { IUser } from './types/user.interface';
 import { CreateUserDto } from './dto/createUser.dto';
-import { v4 } from 'uuid';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { ERROR_MSG_USER } from './messages/error.message';
-import {InjectRepository} from "@nestjs/typeorm";
-import {UserEntity} from "./entities/user.entity";
-import {Repository} from "typeorm";
 import {UserRepository} from "./repositories/user.repository";
 
 @Injectable()

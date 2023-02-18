@@ -11,16 +11,8 @@ const AppDataSource = new DataSource({
   username: process.env.PG_USERNAME,
   database: process.env.PG_DATABASE,
   entities: entities,
-  migrations: ['src/migrations/*.ts'],
-  //migrations: ["src/migrations/*.ts"]
-  // type: 'postgres',
-  // host: 'localhost',
-  // port: 5432,
-  // password: '123456',
-  // username: 'postgres',
-  // database: 'service',
-  // entities: [ArtistEntity, UserEntity, TrackEntity, AlbumEntity, FavsEntity],
-  // migrations: ["src/migrations/*.ts"]
+  synchronize: false,
+  migrations: ['src/migrations/*.ts']
 })
 
 AppDataSource.initialize()
