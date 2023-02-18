@@ -7,20 +7,18 @@ import { IUser } from './types/user.interface';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { ERROR_MSG_USER } from './messages/error.message';
-import {UserRepository} from "./repositories/user.repository";
+import { UserRepository } from './repositories/user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly userRepository: UserRepository
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async getAll(): Promise<IUser[]> {
-    return this.userRepository.getAll()
+    return this.userRepository.getAll();
   }
 
   async getById(id: string, viewPassword = false): Promise<IUser> {
-    const user = await this.userRepository.userById(id)
+    const user = await this.userRepository.userById(id);
     if (!user) throw new NotFoundException(ERROR_MSG_USER.NOT_FOUND);
 
     return !viewPassword ? this.handlerRequest(user) : user;
@@ -34,7 +32,7 @@ export class UserService {
       updatedAt: Date.now(),
     };
 
-    const user = await this.userRepository.createAndUpdateUser(newUser)
+    const user = await this.userRepository.createAndUpdateUser(newUser);
 
     return this.handlerRequest(user);
   }
@@ -50,8 +48,8 @@ export class UserService {
     user.version = user.version + 1;
     user.updatedAt = Date.now();
 
-    const updateUser = await this.userRepository.createAndUpdateUser(user)
-    return this.handlerRequest(updateUser)
+    const updateUser = await this.userRepository.createAndUpdateUser(user);
+    return this.handlerRequest(updateUser);
   }
 
   async delete(id: string): Promise<void> {
@@ -60,7 +58,11 @@ export class UserService {
   }
 
   async handlerRequest(data: IUser): Promise<IUser> {
-    const reqUser: IUser = { ...data, updatedAt: +data.updatedAt, createdAt: +data.createdAt };
+    const reqUser: IUser = {
+      ...data,
+      updatedAt: +data.updatedAt,
+      createdAt: +data.createdAt,
+    };
     delete reqUser.password;
     return reqUser;
   }

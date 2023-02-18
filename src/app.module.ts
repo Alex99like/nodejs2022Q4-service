@@ -6,9 +6,9 @@ import { ArtistModule } from './artist/artist.module';
 import { AlbumModule } from './album/album.module';
 import { TrackModule } from './track/track.module';
 import { FavsModule } from './favs/favs.module';
-import {ConfigModule, ConfigService} from '@nestjs/config';
-import {TypeOrmModule} from "@nestjs/typeorm";
-import {getTypeOrmConfig} from "./config/orm.config";
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { getTypeOrmConfig } from './config/orm.config';
 
 @Module({
   imports: [

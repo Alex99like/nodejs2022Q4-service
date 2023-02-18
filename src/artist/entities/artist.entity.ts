@@ -1,6 +1,12 @@
-import {Column, Entity, JoinColumn, JoinTable, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {TrackEntity} from "../../track/entities/track.entity";
-import {AlbumEntity} from "../../album/entities/album.entity";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { TrackEntity } from '../../track/entities/track.entity';
+import { AlbumEntity } from '../../album/entities/album.entity';
 
 @Entity('artists')
 export class ArtistEntity {

@@ -3,20 +3,20 @@ import { ArtistDto } from './dto/artist.dto';
 import { IArtist } from './types/artist.interface';
 import { v4 } from 'uuid';
 import { ERROR_MSG_ARTIST } from './messages/error.message';
-import {ArtistRepository} from "./repositories/artist.repository";
-import {FavsRepository} from "../favs/repositories/favs.repository";
-import {TrackRepository} from "../track/repositories/track.repository";
+import { ArtistRepository } from './repositories/artist.repository';
+import { FavsRepository } from '../favs/repositories/favs.repository';
+import { TrackRepository } from '../track/repositories/track.repository';
 
 @Injectable()
 export class ArtistService {
   constructor(
     private readonly artistRepository: ArtistRepository,
     private readonly favsRepository: FavsRepository,
-    private readonly trackRepository: TrackRepository
+    private readonly trackRepository: TrackRepository,
   ) {}
 
   async getById(id: string): Promise<IArtist | null> {
-    const artist = await this.artistRepository.artistById(id)
+    const artist = await this.artistRepository.artistById(id);
 
     return artist ? artist : null;
   }
@@ -73,6 +73,6 @@ export class ArtistService {
   }
 
   async changeFavs(artistId: string): Promise<void> {
-    await this.favsRepository.remove(artistId)
+    await this.favsRepository.remove(artistId);
   }
 }

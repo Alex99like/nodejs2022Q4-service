@@ -1,21 +1,17 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { TrackDto } from './dto/track.dto';
 import { v4 } from 'uuid';
 import { ERROR_MSG_TRACK } from './messages/error.message';
 import { ITrack } from './types/track.interface';
-import {TrackRepository} from "./repositories/track.repository";
-import {FavsRepository} from "../favs/repositories/favs.repository";
+import { TrackRepository } from './repositories/track.repository';
+import { FavsRepository } from '../favs/repositories/favs.repository';
 
 @Injectable()
 export class TrackService {
   constructor(
     //private readonly dbService: DbService,
     private readonly trackRepository: TrackRepository,
-    private readonly favsRepository: FavsRepository
+    private readonly favsRepository: FavsRepository,
   ) {}
 
   async getAll(): Promise<ITrack[]> {
@@ -33,7 +29,6 @@ export class TrackService {
   }
 
   async create(dto: TrackDto): Promise<ITrack> {
-
     const newTrack: ITrack = {
       id: v4(),
       ...dto,
@@ -81,6 +76,6 @@ export class TrackService {
   //}
 
   async changeFavs(trackId: string): Promise<void> {
-    await this.favsRepository.remove(trackId)
+    await this.favsRepository.remove(trackId);
   }
 }

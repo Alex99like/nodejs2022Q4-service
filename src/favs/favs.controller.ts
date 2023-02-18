@@ -13,7 +13,7 @@ export class FavsController {
 
   @Post('track/:id')
   async addTrack(@Param('id', ValidateUuidPipe) id: string) {
-   return this.favsService.addTrack(id);
+    return this.favsService.addTrack(id);
   }
 
   @Delete('track/:id')
