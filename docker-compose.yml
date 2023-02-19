@@ -14,7 +14,7 @@ services:
     networks:
       - rest-network
   app:
-    image: alex99like/rest-service-dev
+    image: alex99like/rest-service
     ports:
       - "${PORT}:${PORT}"
     depends_on:
@@ -33,3 +33,4 @@ volumes:
 networks:
   rest-network:
     driver: bridge
+#image: alex99like/rest-service-dev
