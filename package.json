@@ -13,7 +13,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "start:docker": "docker-compose up --build",
+    "start:docker": "docker:clean && docker-compose up --build",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --config ./test/jest-e2e.json",
     "test:auth": "cross-env TEST_MODE=auth jest --config ./test/jest-e2e.json",
@@ -23,7 +23,8 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "makemigration": "npm run typeorm migration:generate -- -d src/migration.config.ts src/migrations/auto",
     "migrate": "npm run typeorm migration:run -- -d src/migration.config.ts",
-    "docker:scan": "docker scan alex99like/rest-service-dev"
+    "docker:scan": "docker scan alex99like/rest-service-dev",
+    "docker:clean": "docker container prune -f && docker volume prune -f && docker image prune -f &&  docker system prune -f"
   },
   "dependencies": {
     "@nestjs/common": "^9.3.2",

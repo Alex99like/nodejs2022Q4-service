@@ -30,10 +30,6 @@ yarn install
 ```
 npm run start:docker
 ```
-or
-```
-docker-compose up --build
-```
 
 ## npm script for vulnerabilities scanning
 ```
