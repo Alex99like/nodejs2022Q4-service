@@ -15,6 +15,7 @@ services:
       - rest-network
   app:
     image: alex99like/rest-service
+    restart: always
     ports:
       - "${PORT}:${PORT}"
     depends_on:
