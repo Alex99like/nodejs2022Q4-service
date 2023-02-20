@@ -28,6 +28,10 @@ yarn install
 
 ## Running Docker-build
 ```
+npm run start:docker
+```
+or
+```
 docker-compose up --build
 ```
 
