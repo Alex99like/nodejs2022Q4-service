@@ -32,6 +32,7 @@
     "@nestjs/core": "^9.3.2",
     "@nestjs/jwt": "^10.0.1",
     "@nestjs/mapped-types": "^1.2.2",
+    "@nestjs/passport": "nestjs/passport",
     "@nestjs/platform-express": "^9.3.2",
     "@nestjs/swagger": "^6.1.4",
     "@nestjs/typeorm": "^9.0.1",

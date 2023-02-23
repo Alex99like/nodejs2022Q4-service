@@ -9,6 +9,7 @@ import { FavsModule } from './favs/favs.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getTypeOrmConfig } from './config/orm.config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { getTypeOrmConfig } from './config/orm.config';
       inject: [ConfigService],
       useFactory: getTypeOrmConfig,
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
