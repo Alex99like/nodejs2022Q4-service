@@ -23,8 +23,10 @@ export class UserRepository {
     }));
   }
 
-  async userById(id: string) {
-    return await this.userRepository.findOne({ where: { id } });
+  async userById(option: { key: keyof UserEntity; value: string }) {
+    return await this.userRepository.findOne({
+      where: { [option.key]: option.value },
+    });
   }
 
   async createAndUpdateUser(dto: CreateUserDto) {

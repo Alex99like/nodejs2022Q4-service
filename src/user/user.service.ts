@@ -18,7 +18,7 @@ export class UserService {
   }
 
   async getById(id: string, viewPassword = false): Promise<IUser> {
-    const user = await this.userRepository.userById(id);
+    const user = await this.userRepository.userById({ key: 'id', value: id });
     if (!user) throw new NotFoundException(ERROR_MSG_USER.NOT_FOUND);
 
     return !viewPassword ? this.handlerRequest(user) : user;
