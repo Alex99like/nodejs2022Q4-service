@@ -5,15 +5,14 @@ import { UserService } from 'src/user/user.service';
 import { hash, genSalt, compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshDto } from './dto/refresh.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-  private readonly refreshToken = '15d';
-  private readonly accessToken = '1h';
-
   constructor(
     private readonly userRepository: UserRepository,
     private readonly userService: UserService,
+    private readonly configService: ConfigService,
     private jwtService: JwtService,
   ) {}
   async signup(dto: CreateUserDto) {
@@ -48,12 +47,18 @@ export class AuthService {
   }
 
   async newToken(dto: RefreshDto) {
-    const body = (await this.jwtService.verifyAsync(dto.refreshToken)) as {
-      id: string;
-    };
-    const user = await this.userService.getById(body.id);
+    try {
+      const body = (await this.jwtService.verifyAsync(dto.refreshToken)) as {
+        id: string;
+      };
 
-    return await this.issueTokenPair(user.id);
+      if (!body) throw new UnauthorizedException('Invalid token or expired');
+      const user = await this.userService.getById(body.id);
+
+      return await this.issueTokenPair(user.id);
+    } catch (e) {
+      throw new UnauthorizedException('Invalid token or expired');
+    }
   }
 
   async issueTokenPair(userId: string) {
@@ -62,11 +67,13 @@ export class AuthService {
     };
 
     const refreshToken = await this.jwtService.signAsync(data, {
-      expiresIn: this.refreshToken,
+      expiresIn: this.configService.get('TOKEN_REFRESH_EXPIRE_TIME'),
+      secret: this.configService.get('JWT_SECRET_REFRESH_KEY'),
     });
 
     const accessToken = await this.jwtService.signAsync(data, {
-      expiresIn: this.accessToken,
+      expiresIn: this.configService.get('TOKEN_EXPIRE_TIME'),
+      secret: this.configService.get('JWT_SECRET_KEY'),
     });
 
     return { accessToken, refreshToken };

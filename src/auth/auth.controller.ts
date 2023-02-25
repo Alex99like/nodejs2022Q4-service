@@ -1,8 +1,9 @@
-import { Body, Controller, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, UsePipes } from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common/pipes';
 import { CreateUserDto } from 'src/user/dto/createUser.dto';
 import { AuthService } from './auth.service';
 import { RefreshDto } from './dto/refresh.dto';
+import { AuthGuard } from './strategies/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -21,6 +22,7 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @UseGuards(AuthGuard)
   async refresh(@Body() dto: RefreshDto) {
     return await this.authService.newToken(dto);
   }
