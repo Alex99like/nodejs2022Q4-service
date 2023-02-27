@@ -8,19 +8,32 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/Alex99like/nodejs2022Q4-service
+```
+### Branch
+
+```
+git checkout dev-postgres
 ```
 
 ## Installing NPM modules
 
 ```
-npm install
+npm install 
+```
+or 
+```
+yarn install 
 ```
 
-## Running application
-
+## Running Docker-build
 ```
-npm start
+npm run start:docker
+```
+
+## npm script for vulnerabilities scanning
+```
+npm run docker:scan
 ```
 
 After starting the app on port (4000 as default) you can open
